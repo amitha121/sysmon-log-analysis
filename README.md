@@ -2,7 +2,7 @@
 Basic Windows Sysmon log analysis for security monitoring and threat detection
 Title : A hands-on Endpoint Log Analysis Project
 Sysmon-Based Endpoint Monitoring and Threat Detection Lab
-Project Overview
+## Project Overview
 
 This project demonstrates how Windows endpoint activity can be monitored and analyzed using Sysmon. The objective was to simulate basic attacker techniques and investigate the generated telemetry through Windows Event Viewer.
 
@@ -10,7 +10,7 @@ The lab focuses on identifying suspicious behaviors including encoded PowerShell
 
 The purpose of this exercise was to gain practical experience in endpoint visibility and foundational security investigation techniques commonly used in SOC environments.
 
-Lab Environment
+## Lab Environment
 
 Operating System: Windows 10
 Monitoring Tool: Sysmon (System Monitor)
@@ -27,60 +27,60 @@ The following controlled actions were performed to generate detectable activity.
 
 Encoded PowerShell Execution
 
-Command Executed:
+#### Command Executed:
 
 powershell.exe -enc UABvAHcAZQByAFMAaABlAGwAbAAgAGQAZQBtAG8=
 
 This command launches PowerShell with a Base64-encoded argument.
 
-Log Evidence:
+#### Log Evidence:
 
 Event ID: 1 (Process Creation)
 Image: powershell.exe
 CommandLine: contains the "-enc" parameter
 
-Analysis:
+### Analysis:
 
 The -enc parameter allows PowerShell commands to be encoded in Base64 format. This technique is frequently used by attackers to obfuscate malicious commands and bypass simple detection mechanisms. Monitoring encoded command-line execution is a common detection strategy in endpoint security.
 
 Outbound Network Connection via PowerShell
 
-Command Executed:
+#### Command Executed:
 
 Invoke-WebRequest http://example.com -UseBasicParsing
 
 This command forces PowerShell to initiate an HTTP request to an external domain.
 
-Log Evidence:
+#### Log Evidence:
 
 Event ID: 3 (Network Connection)
 Image: powershell.exe
 DestinationHostname: example.com
 DestinationPort: 80
 
-Analysis:
+### Analysis:
 
 PowerShell is a legitimate administrative tool but is often abused to download payloads, establish command-and-control communication, or exfiltrate data. Detecting network connections initiated by PowerShell is important during endpoint investigations.
 
 File Creation in AppData Directory
 
-Command Executed:
+#### Command Executed:
 
 New-Item -Path "$env:APPDATA\dummy_malware.txt" -ItemType File
 
 This creates a file within the user’s AppData directory.
 
-Log Evidence:
+#### Log Evidence:
 
 Event ID: 11 (File Creation)
 TargetFilename: dummy_malware.txt
 Directory: AppData\Roaming
 
-Analysis:
+### Analysis:
 
 The AppData directory is frequently used by malware to drop payloads, store configuration files, and maintain persistence. Monitoring file creation in user-specific directories can help identify suspicious activity.
 
-Log Investigation Methodology
+## Log Investigation Methodology
 
 The investigation was conducted using Windows Event Viewer by filtering Sysmon logs based on relevant Event IDs:
 
@@ -88,7 +88,7 @@ Event ID 1 – Process Creation
 Event ID 3 – Network Connection
 Event ID 11 – File Creation
 
-The following fields were examined during analysis:
+###### The following fields were examined during analysis:
 
 Image
 CommandLine
@@ -99,14 +99,14 @@ File Hashes
 
 Special attention was given to identifying unusual command-line arguments, encoded execution patterns, and network connections originating from PowerShell.
 
-Key Findings
+## Key Findings
 
 Encoded PowerShell execution was successfully logged and identified.
 PowerShell-initiated outbound network traffic was captured through Sysmon network connection events.
 File creation activity in user directories was recorded and reviewed.
 Normal background system processes were distinguished from intentionally simulated suspicious activity.
 
-Lessons Learned
+## Lessons Learned
 
 How to install and configure Sysmon for endpoint monitoring
 How process creation events reveal command-line activity
@@ -116,7 +116,7 @@ How to conduct endpoint log analysis using native Windows tools
 
 This lab provided practical experience in analyzing endpoint telemetry and understanding how common attacker behaviors appear in system logs.
 
-Future Improvements
+## Future Improvements
 
 Custom Sysmon configuration tuning
 Integration with a SIEM platform
@@ -124,7 +124,7 @@ Creation of detection rules for encoded PowerShell
 Simulation of more advanced attack techniques
 Automation of log analysis using Python or PowerShell scripts
 
-Conclusion
+## Conclusion
 
 This project demonstrates how Sysmon provides valuable visibility into endpoint activity. Even basic logging configurations allow detection of techniques such as encoded PowerShell execution and suspicious outbound network connections.
 
